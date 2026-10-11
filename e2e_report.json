@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Blogs",
+    "status": "PASS",
+    "error": null
+  },
+  {
+    "name": "Categories",
+    "status": "FAIL",
+    "error": "Category Create failed"
+  },
+  {
+    "name": "Products",
+    "status": "PASS",
+    "error": null
+  },
+  {
+    "name": "Global Settings",
+    "status": "PASS",
+    "error": null
+  },
+  {
+    "name": "Contact Page",
+    "status": "PASS",
+    "error": null
+  },
+  {
+    "name": "Gallery",
+    "status": "FAIL",
+    "error": "Gallery Create failed"
+  },
+  {
+    "name": "Certifications",
+    "status": "FAIL",
+    "error": "Certifications Create failed"
+  },
+  {
+    "name": "Team",
+    "status": "FAIL",
+    "error": "Team Create failed"
+  }
+]

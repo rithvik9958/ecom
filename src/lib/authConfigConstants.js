@@ -1,0 +1,20 @@
+export const DEFAULT_AUTH_CONFIG = {
+  bgImage: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1200&q=80',
+  overlayOpacity: 0.85,
+  overlayColor: '#0b0f19',
+  logoUrl: '/elogo.png',
+  loginHeadline: 'Welcome Back!',
+  loginSubtitle: 'Sign in to access your orders, saved addresses, and personalized shopping experience.',
+  registerHeadline: 'Join Us Today!',
+  registerSubtitle: 'Create an account to enjoy a seamless shopping experience, track your orders, and unlock exclusive offers.',
+  forgotHeadline: 'Reset Your Password',
+  forgotSubtitle: "Enter the email linked to your account and we'll send you a secure link to reset your password.",
+  features: [
+    'Track your orders in real-time',
+    'Save multiple delivery addresses',
+    'Exclusive member offers & discounts',
+    'Fast & secure checkout',
+  ],
+  featuresHtml: `<ul><li>Track your orders in real-time</li><li>Save multiple delivery addresses</li><li>Exclusive member offers & discounts</li><li>Fast & secure checkout</li></ul>`,
+  showFeatures: true,
+};

@@ -1,0 +1,4 @@
+title,category,price,mrp,stock,isActive
+"Sample Product 1","Electronics",999,1299,50,true
+"Sample Product 2","Clothing",499,999,100,true
+"Sample Product 3","Home",299,599,20,false

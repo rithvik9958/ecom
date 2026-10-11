@@ -1,0 +1,252 @@
+.hero-slider {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-style {
+  height: 100vh;
+}
+
+.swiper,
+.swiper-slide {
+  width: 100%;
+  height: 100%;
+}
+
+.slide-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Ken Burns continuous zoom effect */
+.bg-image-wrapper {
+  position: absolute;
+  inset: -5%; /* Over-scale slightly to allow pan/zoom */
+  width: 110%;
+  height: 110%;
+  z-index: -1;
+  transition: transform 10s ease-out;
+  transform: scale(1);
+}
+
+.swiper-slide-active .bg-image-wrapper {
+  animation: kenBurns 12s infinite alternate ease-in-out;
+}
+
+@keyframes kenBurns {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.15) translate(-2.5%, -2.5%); }
+}
+
+.slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      rgba(15, 15, 25, 0.7) 0%,
+      rgba(15, 15, 25, 0.3) 100%);
+  z-index: 1;
+}
+
+.h-container {
+  width: 1200px;
+  max-width: 100%;
+  padding: 0 20px;
+  margin: auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Content box */
+.hero-content-box {
+  max-width: 850px;
+  margin: 0 auto;
+  text-align: center;
+  
+  /* Entrance animation prep */
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: 0.3s;
+}
+
+.swiper-slide-active .hero-content-box {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-title h1,
+.slide-title .h1 {
+  font-size: 72px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 24px;
+  line-height: 1.15;
+  letter-spacing: -1px;
+}
+
+.slide-text p {
+  font-size: 24px;
+  color: #e2e8f0;
+  font-weight: 300;
+  max-width: 700px;
+  margin-bottom: 35px;
+  line-height: 1.5;
+}
+
+/* Glassmorphism Certifications */
+.slide-certifications-wrapper {
+  margin-top: 0px;
+  margin-bottom: 35px;
+}
+
+.glass-certifications {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-cert-item {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 50%;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.glass-cert-item:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* Premium Button Sweep */
+.theme-btn-s2 {
+  position: relative;
+  display: inline-block;
+  padding: 16px 36px;
+  background: #ffffff;
+  color: #0f172a;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  z-index: 1;
+  box-shadow: 0 8px 20px rgba(255,255,255,0.15);
+}
+
+.theme-btn-s2::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background: #0f172a; /* Or var(--primary-color) */
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
+  border-radius: 50px;
+}
+
+.theme-btn-s2:hover {
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  transform: translateY(-2px);
+}
+
+.theme-btn-s2:hover::before {
+  width: 100%;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: rgba(255, 255, 255, 0.7) !important;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  color: #fff !important;
+  transform: scale(1.1);
+}
+
+.swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.5) !important;
+  transition: all 0.3s ease;
+  width: 10px;
+  height: 10px;
+}
+.swiper-pagination-bullet-active {
+  background: #fff !important;
+  width: 25px;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .slide-title h1,
+  .slide-title .h1 {
+    font-size: 38px;
+  }
+  .slide-text p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slide-title h1,
+  .slide-title .h1 {
+    font-size: 26px;
+    letter-spacing: -0.5px;
+    margin-bottom: 14px;
+  }
+
+  .slide-text p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .slide-certifications-wrapper {
+    margin-top: 0px;
+    margin-bottom: 20px;
+  }
+
+  .glass-certifications {
+    gap: 12px;
+    padding: 8px 16px;
+  }
+
+  .glass-cert-item {
+    width: 50px;
+    height: 50px;
+    padding: 8px;
+  }
+
+  .theme-btn-s2 {
+    padding: 12px 22px;
+    font-size: 14px;
+  }
+
+  /* Hide navigation arrows on very small screens to save space */
+  .swiper-button-next::after,
+  .swiper-button-prev::after {
+    font-size: 18px !important;
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "cookies": [
+    {
+      "name": "admin_token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhN2M1NDU5NTQ2NTkzZmU5ZTEyMGMwNyIsImVtYWlsIjoiYWRtaW5AZXNob3AuY29tIiwibmFtZSI6IlN1cGVyIEFkbWluIiwicm9sZSI6InN1cGVyX2FkbWluIiwicGVybWlzc2lvbnMiOnt9LCJpYXQiOjE3ODkxOTczNDUsImV4cCI6MTc4OTI4Mzc0NX0.JOBohd_uxtI90G8bhgR3ZRxvAMphOWzUOp7VyK82K5k",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1789283745.453184,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:3000",
+      "localStorage": [
+        {
+          "name": "admin_login_history",
+          "value": "true"
+        },
+        {
+          "name": "admin_user",
+          "value": "{\"id\":\"6a7c5459546593fe9e120c07\",\"name\":\"Super Admin\",\"email\":\"admin@eshop.com\",\"role\":\"super_admin\",\"permissions\":{}}"
+        },
+        {
+          "name": "admin_logged_in",
+          "value": "true"
+        }
+      ]
+    }
+  ]
+}
