@@ -1,29 +1,29 @@
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import CategoryClient from './CategoryClient';
+import { getEcomCategory } from '@/app/models/EcomCategory';
 
-export async function generateStaticParams() {
+async function getAllCategories() {
   try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${base}/api/store-categories`);
-    if (!res.ok) return [];
-    const cats = await res.json();
-    return cats.map((c) => ({
-      slug: c.slug,
-    }));
-  } catch {
+    const Category = await getEcomCategory();
+    const cats = await Category.find({ isActive: true }).sort({ order: 1, title: 1 }).lean();
+    return JSON.parse(JSON.stringify(cats || []));
+  } catch (err) {
+    console.error('Failed to load categories:', err);
     return [];
   }
 }
 
+export async function generateStaticParams() {
+  const cats = await getAllCategories();
+  return cats.map((c) => ({
+    slug: c.slug,
+  }));
+}
+
 async function getCategory(slug) {
-  try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${base}/api/store-categories`, { next: { revalidate: 3600 } });
-    if (!res.ok) return null;
-    const cats = await res.json();
-    return cats.find((c) => c.slug === slug) || null;
-  } catch { return null; }
+  const cats = await getAllCategories();
+  return cats.find((c) => c.slug === slug) || null;
 }
 
 export async function generateMetadata({ params }) {
@@ -38,14 +38,7 @@ export async function generateMetadata({ params }) {
 
 export default async function CategoryPage({ params }) {
   const { slug } = await params;
-  
-  const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  const res = await fetch(`${base}/api/store-categories`, { next: { revalidate: 3600 } });
-  let allCats = [];
-  if (res.ok) {
-    allCats = await res.json();
-  }
-  
+  const allCats = await getAllCategories();
   const cat = allCats.find((c) => c.slug === slug);
   if (!cat) notFound();
 

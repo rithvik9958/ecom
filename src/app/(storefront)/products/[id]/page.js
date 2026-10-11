@@ -1,20 +1,20 @@
 import { notFound } from 'next/navigation';
 import ProductDetailClient from './ProductDetailClient';
+import { getEcomProduct } from '@/app/models/EcomProduct';
+import { getEcomAddon } from '@/app/models/EcomAddon';
+import { getEcomAddonCategory } from '@/app/models/EcomAddonCategory';
 
 function getImageUrl(url) {
   if (!url) return undefined;
   if (url.startsWith('http')) return url;
-  return `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}${url}`;
+  return `${process.env.NEXT_PUBLIC_BASE_URL || ''}${url}`;
 }
 
 export async function generateStaticParams() {
   try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    // Fetch all products (limit high enough or no limit if backend supports it)
-    const res = await fetch(`${base}/api/store-products?limit=1000`);
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.products || []).map((product) => ({
+    const Product = await getEcomProduct();
+    const products = await Product.find({ isActive: true }).select('id').limit(1000).lean();
+    return (products || []).map((product) => ({
       id: product.id,
     }));
   } catch {
@@ -24,21 +24,50 @@ export async function generateStaticParams() {
 
 async function getProduct(id) {
   try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res  = await fetch(`${base}/api/store-products/${id}`, { next: { revalidate: 600 } });
-    if (!res.ok) return null;
-    return res.json();
-  } catch { return null; }
+    const Product = await getEcomProduct();
+    await getEcomAddon();
+    await getEcomAddonCategory();
+
+    const rawId = id ? decodeURIComponent(id).trim() : '';
+    const queryConditions = [{ id: rawId }, { slug: rawId }];
+    if (rawId && rawId.length === 24 && /^[0-9a-fA-F]{24}$/.test(rawId)) {
+      queryConditions.push({ _id: rawId });
+    }
+
+    const product = await Product.findOne({
+      $or: queryConditions,
+    }).populate({ 
+      path: 'addOns', 
+      model: 'EcomAddon',
+      populate: { path: 'category', select: 'name image', model: 'EcomAddonCategory' } 
+    }).lean();
+
+    if (!product) return null;
+    return JSON.parse(JSON.stringify(product));
+  } catch (err) {
+    console.error('Error fetching product:', err);
+    return null;
+  }
 }
 
 async function getRelated(category, excludeId) {
   try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res  = await fetch(`${base}/api/store-products?category=${encodeURIComponent(category)}&limit=6`, { next: { revalidate: 600 } });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.products || []).filter((p) => p.id !== excludeId && p._id !== excludeId).slice(0, 4);
-  } catch { return []; }
+    const Product = await getEcomProduct();
+    const rawExclude = excludeId ? String(excludeId) : '';
+    const products = await Product.find({
+      category,
+      isActive: true,
+      $and: [
+        { id: { $ne: rawExclude } },
+        { slug: { $ne: rawExclude } }
+      ]
+    }).limit(4).lean();
+
+    return JSON.parse(JSON.stringify(products || []));
+  } catch (err) {
+    console.error('Error fetching related products:', err);
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }) {

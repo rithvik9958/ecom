@@ -1,6 +1,9 @@
 import { Suspense } from 'react';
 import HomeClient from './HomeClient';
 import { getEcomTheme } from '@/app/models/EcomTheme';
+import { getEcomBanner } from '@/app/models/EcomBanner';
+import { getEcomCategory } from '@/app/models/EcomCategory';
+import { getEcomHomepage } from '@/app/models/EcomHomepage';
 
 export async function generateMetadata() {
   let brandName = 'MyCart';
@@ -26,27 +29,26 @@ export async function generateMetadata() {
 }
 
 async function getHomepageData() {
-  const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  const opts = { next: { revalidate: 300 } };
-
   try {
-    const [bannersRes, categoriesRes, homepageRes] = await Promise.allSettled([
-      fetch(`${base}/api/store-banners`, opts),
-      fetch(`${base}/api/store-categories`, opts),
-      fetch(`${base}/api/store-homepage`, opts),
+    const [Banner, Category, Homepage] = await Promise.all([
+      getEcomBanner(),
+      getEcomCategory(),
+      getEcomHomepage(),
     ]);
 
-    const homepage =
-      homepageRes.status === 'fulfilled' && homepageRes.value.ok
-        ? await homepageRes.value.json()
-        : null;
+    const [banners, categories, homepage] = await Promise.all([
+      Banner.find({ isActive: true }).sort({ order: 1 }).lean(),
+      Category.find({ isActive: true }).sort({ order: 1, title: 1 }).lean(),
+      Homepage.findOne({ key: 'homepage' }).lean(),
+    ]);
 
     return {
-      banners:    bannersRes.status    === 'fulfilled' && bannersRes.value.ok    ? await bannersRes.value.json()    : [],
-      categories: categoriesRes.status === 'fulfilled' && categoriesRes.value.ok ? await categoriesRes.value.json() : [],
-      sections:   homepage?.sections || [],
+      banners: JSON.parse(JSON.stringify(banners || [])),
+      categories: JSON.parse(JSON.stringify(categories || [])),
+      sections: JSON.parse(JSON.stringify(homepage?.sections || [])),
     };
-  } catch {
+  } catch (err) {
+    console.error('Failed to load homepage data:', err);
     return { banners: [], categories: [], sections: [] };
   }
 }

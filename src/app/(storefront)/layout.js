@@ -13,6 +13,7 @@ import PwaInstallPrompt from '@/components/storefront/PwaInstallPrompt';
 import WebPushPrompt from '@/components/storefront/WebPushPrompt';
 import { StoreThemeProvider } from '@/context/StoreThemeContext';
 import { getEcomTheme, DEFAULT_ECOM_THEME } from '@/app/models/EcomTheme';
+import { getEcomCategory } from '@/app/models/EcomCategory';
 import GlobalSetting from '@/app/models/GlobalSetting';
 import '@/css/storefront.css';
 
@@ -34,11 +35,13 @@ export const metadata = {
 
 async function getCategories() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/store-categories`, { cache: 'no-store' });
-    if (res.ok) return res.json();
-  } catch { /* fallback silently */ }
-  return [];
+    const Category = await getEcomCategory();
+    const categories = await Category.find({ isActive: true }).sort({ order: 1, title: 1 }).lean();
+    return JSON.parse(JSON.stringify(categories));
+  } catch (err) {
+    console.error('Failed to load categories for header nav:', err);
+    return [];
+  }
 }
 
 async function getTheme() {
