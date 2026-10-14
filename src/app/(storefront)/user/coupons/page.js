@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -27,7 +27,10 @@ export default function MyCouponsPage() {
     async function loadCoupons() {
       try {
         setLoading(true);
-        const res = await fetch('/api/store-coupons');
+        const token = typeof window !== 'undefined' ? localStorage.getItem('store_token') : null;
+        const res = await fetch('/api/store-coupons', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
         const data = await res.json();
         if (data.success) {
           setCoupons(data.coupons || []);
@@ -39,7 +42,7 @@ export default function MyCouponsPage() {
       }
     }
     loadCoupons();
-  }, []);
+  }, [user]);
 
   const handleCopyCode = (code) => {
     navigator.clipboard.writeText(code);

@@ -31,19 +31,50 @@ const couponSchema = new mongoose.Schema({
   },
   expiresAt: {
     type: Date
+  },
+  targetAudience: {
+    type: String,
+    enum: ['all', 'first_time', 'specific_customer', 'returning'],
+    default: 'all'
+  },
+  targetEmail: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    default: ''
+  },
+  maxUsesPerUser: {
+    type: Number,
+    default: 1
+  },
+  usageLimit: {
+    type: Number,
+    default: 0
+  },
+  usedCount: {
+    type: Number,
+    default: 0
   }
 }, { timestamps: true });
+
+import { connectDB } from '@/app/lib/config';
 
 let _EcomCoupon;
 
 export function getEcomCoupon() {
-  if (_EcomCoupon) return _EcomCoupon;
-
+  connectDB();
   const conn = mongoose.connection;
   if (!conn) {
     throw new Error('Mongoose connection not established');
   }
 
-  _EcomCoupon = conn.models.Coupon || conn.model('Coupon', couponSchema);
+  if (conn.models.Coupon) {
+    delete conn.models.Coupon;
+  }
+  if (mongoose.models.Coupon) {
+    delete mongoose.models.Coupon;
+  }
+
+  _EcomCoupon = conn.model('Coupon', couponSchema);
   return _EcomCoupon;
 }

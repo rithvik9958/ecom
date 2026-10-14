@@ -74,9 +74,29 @@ export default function ProductCard({ product }) {
   const [adding, setAdding] = useState(false);
   const [showVariantDropdown, setShowVariantDropdown] = useState(false);
   const dropdownRef = useRef(null);
+  const swiperRef = useRef(null);
   const productId = product.id || String(product._id);
   const wishlisted = isWishlisted(productId);
   const compared = isInCompare(product) || isInCompare(productId);
+
+  const handleMouseEnter = () => {
+    if (swiperRef.current && swiperRef.current.autoplay) {
+      try {
+        swiperRef.current.autoplay.start();
+      } catch (e) {}
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (swiperRef.current) {
+      try {
+        if (swiperRef.current.autoplay) {
+          swiperRef.current.autoplay.stop();
+        }
+        swiperRef.current.slideTo(0);
+      } catch (e) {}
+    }
+  };
 
   const handleWishlist = useCallback(async (e) => {
     e.preventDefault();
@@ -283,15 +303,29 @@ export default function ProductCard({ product }) {
   }
 
   return (
-    <div className="fnp-product-card">
+    <div
+      className="fnp-product-card"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <Link href={`/products/${product.id || product._id}`} className="fnp-product-img-wrap" style={{ display: 'block', textDecoration: 'none' }}>
         {allImages.length > 0 ? (
           allImages.length > 1 ? (
             <Swiper
               modules={[Pagination, Autoplay]}
               pagination={{ clickable: true }}
-              autoplay={{ delay: 2500, disableOnInteraction: false }}
-              loop={true}
+              autoplay={{
+                delay: 1200,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: false
+              }}
+              loop={allImages.length > 1}
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper;
+                try {
+                  swiper.autoplay?.stop();
+                } catch (e) {}
+              }}
               className="fnp-card-swiper"
             >
               {allImages.slice(0, 4).map((img, idx) => (

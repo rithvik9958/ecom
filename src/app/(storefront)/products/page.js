@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { 
@@ -505,7 +505,6 @@ function ProductsContent() {
                 className="fnp-mobile-filter-trigger"
                 onClick={() => setMobileFiltersOpen(true)}
                 style={{
-                  display: 'none',
                   alignItems: 'center',
                   gap: '6px',
                   background: '#fff',

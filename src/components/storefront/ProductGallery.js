@@ -55,13 +55,13 @@ export default function ProductGallery({ images = [], title = 'Product Image' })
         <div className="fnp-gallery-main">
           {activeUrl ? (
             <div 
-              style={{ width: '100%', height: '100%', cursor: 'pointer', position: 'relative' }} 
+              style={{ width: '100%', height: '100%', cursor: 'pointer', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', backgroundColor: '#ffffff' }} 
               onClick={() => setIsModalOpen(true)}
             >
               <img
                 src={activeUrl}
                 alt={title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', objectFit: 'contain' }}
               />
               <button
                 style={{ position: 'absolute', bottom: '16px', right: '16px', background: 'rgba(255,255,255,0.9)', padding: '8px', borderRadius: '8px', border: '1px solid #e5e5e5', zIndex: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}

@@ -208,7 +208,7 @@ export default function CustomerSupportWidget() {
         position: 'fixed',
         bottom: '24px',
         right: '24px',
-        zIndex: 9999,
+        zIndex: isOpen ? 9999 : 700,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-end',
@@ -223,8 +223,8 @@ export default function CustomerSupportWidget() {
           style={{
             width: '380px',
             maxWidth: 'calc(100vw - 32px)',
-            height: '560px',
-            maxHeight: 'calc(100vh - 120px)',
+            height: 'min(560px, calc(100dvh - 225px))',
+            maxHeight: 'calc(100dvh - 225px)',
             borderRadius: '22px',
             boxShadow: '0 24px 70px rgba(0, 0, 0, 0.25), 0 4px 14px rgba(0, 0, 0, 0.08)',
             display: 'flex',
@@ -817,9 +817,9 @@ export default function CustomerSupportWidget() {
                 boxShadow: '0 0 6px #22c55e'
               }} />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1px' }}>
+            <div className="fnp-support-trigger-text" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1px' }}>
               <span style={{ fontSize: '0.86rem', fontWeight: 800, lineHeight: 1 }}>AI Assistant</span>
-              <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.65)', fontWeight: 500 }}>Online • Ask me anything</span>
+              <span className="fnp-support-trigger-sub" style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.65)', fontWeight: 500 }}>Online • Ask me anything</span>
             </div>
           </>
         )}
@@ -1141,8 +1141,27 @@ export default function CustomerSupportWidget() {
 
         @media (max-width: 768px) {
           .fnp-support-widget-root {
-            bottom: 78px !important;
+            bottom: calc(var(--fnp-bottom-nav-height, 60px) + env(safe-area-inset-bottom, 0px) + 16px) !important;
             right: 16px !important;
+          }
+
+          /* On PDP with sticky purchase bar active, lift support widget above the purchase buttons */
+          body:has(.fnp-mobile-sticky-bar) .fnp-support-widget-root {
+            bottom: calc(var(--fnp-bottom-nav-height, 60px) + 64px + env(safe-area-inset-bottom, 0px) + 16px) !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .fnp-support-trigger-btn {
+            padding: 6px !important;
+            border-radius: 50% !important;
+            width: 46px !important;
+            height: 46px !important;
+            justify-content: center !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+          }
+          .fnp-support-trigger-text {
+            display: none !important;
           }
         }
       `}</style>

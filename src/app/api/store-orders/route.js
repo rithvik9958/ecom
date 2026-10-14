@@ -1,7 +1,9 @@
 import { requireCustomer } from '@/app/lib/customerAuth';
 import { getEcomOrder } from '@/app/models/EcomOrder';
 import { getEcomWallet } from '@/app/models/EcomWallet';
+import { getEcomCoupon } from '@/app/models/EcomCoupon';
 import { createStoreNotification } from '@/lib/sendNotification';
+import { decrementStockForItems } from '@/lib/stockManager';
 import mongoose from 'mongoose';
 
 // GET /api/store-orders — list orders for current customer (or all if admin)
@@ -24,7 +26,24 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { customerName, email, phone, address, city, state, country, postalCode, items, total, paymentMethod, deliverySlot, deliveryDate, walletDeduction } = body;
+    const {
+      customerName,
+      email,
+      phone,
+      address,
+      city,
+      state,
+      country,
+      postalCode,
+      items,
+      total,
+      paymentMethod,
+      deliverySlot,
+      deliveryDate,
+      walletDeduction,
+      couponCode,
+      discountAmount
+    } = body;
 
     if (!customerName || !email || !address || !items?.length || total === undefined) {
       return Response.json(
@@ -49,12 +68,29 @@ export async function POST(request) {
       postalCode,
       items,
       total,
+      couponCode:    couponCode ? String(couponCode).toUpperCase().trim() : null,
+      discountAmount: Number(discountAmount) || 0,
       paymentMethod: paymentMethod || 'cod',
       status:        'pending',
       paymentStatus: body.paymentStatus || (paymentMethod === 'cod' ? 'pending' : 'paid'),
       deliverySlot,
       deliveryDate
     });
+
+    if (couponCode) {
+      try {
+        const Coupon = getEcomCoupon();
+        await Coupon.updateOne(
+          { code: String(couponCode).toUpperCase().trim() },
+          { $inc: { usedCount: 1 } }
+        );
+      } catch (couponErr) {
+        console.error('[Coupon usedCount error]', couponErr);
+      }
+    }
+
+    // Safely decrement stock for ordered products & variants
+    await decrementStockForItems(items);
 
     // Deduct wallet balance if wallet credit was applied
     const deduction = Number(walletDeduction || 0);

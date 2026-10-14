@@ -58,6 +58,8 @@ export async function PUT(request, props) {
     const category = formData.get("category");
     if (category) product.category = category;
 
+    if (formData.has("unit")) product.unit = formData.get("unit") || "pcs";
+
     const priceRaw = formData.get("price");
     if (priceRaw !== null) product.price = Number(priceRaw);
 

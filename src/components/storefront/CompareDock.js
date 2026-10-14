@@ -26,17 +26,12 @@ export default function CompareDock() {
     return (
       <aside
         aria-label="Product comparison dock"
-        style={{
-          position: 'fixed',
-          bottom: '24px',
-          right: '24px',
-          zIndex: 9999,
-          animation: 'fadeInUp 0.3s ease-out',
-        }}
+        className="fnp-compare-dock-collapsed"
       >
         <button
           type="button"
           onClick={toggleDock}
+          className="fnp-compare-collapsed-btn"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -80,7 +75,7 @@ export default function CompareDock() {
               {compareItems.length}
             </span>
           </div>
-          <span>Compare Items</span>
+          <span className="fnp-compare-collapsed-text">Compare Items</span>
           <ChevronUp size={16} color="#a1a1aa" />
         </button>
       </aside>
@@ -91,18 +86,10 @@ export default function CompareDock() {
   return (
     <aside
       aria-label="Product comparison dock"
-      style={{
-        position: 'fixed',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 9999,
-        width: 'calc(100% - 32px)',
-        maxWidth: '860px',
-        animation: 'slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
-      }}
+      className="fnp-compare-dock-expanded"
     >
       <div
+        className="fnp-compare-dock-inner"
         style={{
           background: 'linear-gradient(180deg, rgba(24, 24, 27, 0.98) 0%, rgba(9, 9, 11, 0.99) 100%)',
           backdropFilter: 'blur(16px)',
@@ -119,8 +106,9 @@ export default function CompareDock() {
         }}
       >
         {/* Left Side: Header & Counter */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexShrink: 0 }}>
+        <div className="fnp-compare-dock-left" style={{ display: 'flex', alignItems: 'center', gap: '14px', flexShrink: 0 }}>
           <div
+            className="fnp-compare-dock-icon"
             style={{
               width: '38px',
               height: '38px',
@@ -138,10 +126,11 @@ export default function CompareDock() {
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <h3 style={{ margin: 0, fontSize: '0.92rem', fontWeight: 800, color: '#fafafa', letterSpacing: '-0.01em' }}>
+              <h3 className="fnp-compare-dock-title" style={{ margin: 0, fontSize: '0.92rem', fontWeight: 800, color: '#fafafa', letterSpacing: '-0.01em' }}>
                 Compare Products
               </h3>
               <span
+                className="fnp-compare-dock-badge"
                 style={{
                   background: 'rgba(255, 255, 255, 0.12)',
                   color: '#ffffff',
@@ -155,7 +144,7 @@ export default function CompareDock() {
                 {compareItems.length}/{maxItems}
               </span>
             </div>
-            <p style={{ margin: '2px 0 0', fontSize: '0.72rem', color: '#a1a1aa' }}>
+            <p className="fnp-compare-dock-sub" style={{ margin: '2px 0 0', fontSize: '0.72rem', color: '#a1a1aa' }}>
               {compareItems.length === 1 ? 'Add at least 1 more product' : 'Side-by-side specs comparison'}
             </p>
           </div>
@@ -163,6 +152,7 @@ export default function CompareDock() {
 
         {/* Center: Selected Products Thumbnails (Clean, No Scrollbar) */}
         <div
+          className="fnp-compare-thumbs-wrap"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -231,6 +221,7 @@ export default function CompareDock() {
           {Array.from({ length: maxItems - compareItems.length }).map((_, idx) => (
             <div
               key={`empty-${idx}`}
+              className="fnp-compare-empty-slot"
               style={{
                 width: '46px',
                 height: '46px',
@@ -251,9 +242,10 @@ export default function CompareDock() {
         </div>
 
         {/* Right Side: Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+        <div className="fnp-compare-actions" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
           <button
             type="button"
+            className="fnp-compare-clear-btn"
             onClick={clearCompare}
             style={{
               background: 'transparent',
@@ -278,11 +270,12 @@ export default function CompareDock() {
               e.currentTarget.style.background = 'transparent';
             }}
           >
-            <Trash2 size={14} /> Clear
+            <Trash2 size={14} /> <span className="fnp-compare-clear-text">Clear</span>
           </button>
 
           <Link
             href="/compare"
+            className="fnp-compare-go-btn"
             style={{
               background: 'var(--fnp-green, #111827)',
               color: '#ffffff',
@@ -313,6 +306,8 @@ export default function CompareDock() {
 
           <button
             type="button"
+            aria-label="Minimize Dock"
+            className="fnp-compare-minimize-btn"
             onClick={toggleDock}
             style={{
               background: 'rgba(255, 255, 255, 0.08)',

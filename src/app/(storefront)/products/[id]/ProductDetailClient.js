@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
@@ -1107,7 +1107,7 @@ export default function ProductDetailClient({ product, related }) {
             {/* ── Modern Variant Selector Card (Only shown when 2+ active variants exist) ── */}
             {hasVariants && (() => {
               const activeVariants = (product.variants || []).filter(v => v.isActive !== false);
-              if (activeVariants.length <= 1) return null;
+              if (activeVariants.length === 0) return null;
 
               const getAttrs = (v) => {
                 if (!v || !v.attrs) return {};

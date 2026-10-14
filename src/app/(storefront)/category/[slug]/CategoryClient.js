@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   ArrowRight, Star, ArrowLeft, Search, SlidersHorizontal, 
@@ -633,7 +633,6 @@ export default function CategoryClient({ category, allCategories = [] }) {
                 className="fnp-mobile-filter-trigger"
                 onClick={() => setMobileDrawerOpen(true)}
                 style={{
-                  display: 'none',
                   alignItems: 'center',
                   gap: '6px',
                   background: '#fff',

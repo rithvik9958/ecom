@@ -59,6 +59,7 @@ export default function ProductModal({ product, categories = [], onClose, onSave
     title: isEdit ? product.title : '',
     description: isEdit ? product.description : '',
     category: isEdit ? product.category : '',
+    unit: isEdit ? (product.unit || 'pcs') : 'pcs',
     price: isEdit ? product.price : '',
     mrp: isEdit ? product.mrp : '',
     stock: isEdit ? product.stock : '',
@@ -202,6 +203,7 @@ export default function ProductModal({ product, categories = [], onClose, onSave
       fd.append('title', form.title);
       fd.append('description', form.description);
       fd.append('category', form.category);
+      fd.append('unit', form.unit || 'pcs');
       fd.append('price', form.price);
       fd.append('mrp', form.mrp);
       fd.append('stock', form.stock);
@@ -435,7 +437,7 @@ export default function ProductModal({ product, categories = [], onClose, onSave
                   })()}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">
                       {variants.length > 0 ? 'Starting Price (₹)' : 'Selling Price (₹)'} <span className="text-destructive">*</span>
@@ -463,6 +465,30 @@ export default function ProductModal({ product, categories = [], onClose, onSave
                       className="h-10 text-sm font-mono"
                       placeholder="0"
                     />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground block">
+                      Product Unit
+                    </label>
+                    <Input
+                      value={form.unit}
+                      onChange={e => setForm({ ...form, unit: e.target.value })}
+                      className="h-10 text-sm"
+                      placeholder="e.g. pcs, pack, gm, kg"
+                      list="unit-presets-list"
+                    />
+                    <datalist id="unit-presets-list">
+                      <option value="pcs" />
+                      <option value="pack" />
+                      <option value="box" />
+                      <option value="bottle" />
+                      <option value="jar" />
+                      <option value="gm" />
+                      <option value="kg" />
+                      <option value="ml" />
+                      <option value="L" />
+                    </datalist>
                   </div>
 
                   <div className="space-y-1.5">
@@ -523,13 +549,13 @@ export default function ProductModal({ product, categories = [], onClose, onSave
                 </h4>
 
                 <div className="flex flex-col sm:flex-row items-start gap-5">
-                  <div className="w-32 h-32 rounded-xl border-2 border-dashed border-border bg-muted/20 flex items-center justify-center relative overflow-hidden group shrink-0">
+                  <div className="w-32 h-32 rounded-xl border-2 border-dashed border-border bg-white dark:bg-zinc-900 flex items-center justify-center relative overflow-hidden group shrink-0 shadow-xs">
                     {preview ? (
                       <>
                         <img
                           src={preview.startsWith('blob:') || preview.startsWith('http') ? preview : `/uploads/${preview}`}
                           alt="Main Preview"
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain p-1.5"
                         />
                         <button
                           type="button"
@@ -552,9 +578,38 @@ export default function ProductModal({ product, categories = [], onClose, onSave
                       onChange={handleFileChange}
                       className="flex h-10 w-full rounded-lg border border-border bg-background px-3 py-2 text-xs file:border-0 file:bg-transparent file:text-xs file:font-semibold file:text-primary cursor-pointer"
                     />
-                    <p className="text-xs text-muted-foreground">
-                      Recommended: 600x600px square (1:1 ratio), WebP/JPEG format. Used across product cards and checkout.
-                    </p>
+                    <div className="text-xs text-muted-foreground space-y-1">
+                      <p className="font-medium text-foreground">
+                        📐 Standard Size: <strong>1000 × 1000 px (1:1 Square)</strong>
+                      </p>
+                      <p className="text-[11px]">
+                        Leave 10% breathing space around the product so edges never touch container borders. Transparent PNG or solid white JPEG recommended.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Best Practice Guideline Banner */}
+              <div className="p-4 rounded-xl border border-blue-500/20 bg-blue-500/5 space-y-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-400">
+                  <Sparkles size={14} /> E-Commerce Image Size Cheat-Sheet (Never Cut Off)
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] text-muted-foreground">
+                  <div className="p-2.5 rounded-lg bg-card border border-border">
+                    <div className="font-bold text-foreground">Product Cards & PDP</div>
+                    <div className="font-mono text-primary font-semibold mt-0.5">1000 × 1000 px (1:1)</div>
+                    <div className="mt-1 text-[10px]">Centered on white canvas with 10% margin</div>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-card border border-border">
+                    <div className="font-bold text-foreground">Home Banners (Hero)</div>
+                    <div className="font-mono text-primary font-semibold mt-0.5">1920 × 600 px (16:5)</div>
+                    <div className="mt-1 text-[10px]">Mobile: 800 × 1000 px (4:5 portrait)</div>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-card border border-border">
+                    <div className="font-bold text-foreground">Category Thumbnails</div>
+                    <div className="font-mono text-primary font-semibold mt-0.5">500 × 500 px (1:1)</div>
+                    <div className="mt-1 text-[10px]">Square icon / photo with transparent bg</div>
                   </div>
                 </div>
               </div>
@@ -582,11 +637,11 @@ export default function ProductModal({ product, categories = [], onClose, onSave
                   {(existingImages.length > 0 || galleryFiles.length > 0) ? (
                     <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-3 pt-2">
                       {existingImages.map((img, idx) => (
-                        <div key={`ext-${idx}`} className="relative aspect-square rounded-xl border border-border overflow-hidden group shadow-xs">
+                        <div key={`ext-${idx}`} className="relative aspect-square rounded-xl border border-border bg-white dark:bg-zinc-900 overflow-hidden group shadow-xs">
                           <img
                             src={img.startsWith('http') ? img : `/uploads/${img}`}
                             alt={`Gallery ${idx}`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain p-1"
                           />
                           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <button
@@ -602,11 +657,11 @@ export default function ProductModal({ product, categories = [], onClose, onSave
                       ))}
 
                       {galleryFiles.map((f, idx) => (
-                        <div key={`new-${idx}`} className="relative aspect-square rounded-xl border-2 border-dashed border-primary overflow-hidden group shadow-xs">
+                        <div key={`new-${idx}`} className="relative aspect-square rounded-xl border-2 border-dashed border-primary bg-white dark:bg-zinc-900 overflow-hidden group shadow-xs">
                           <img
                             src={URL.createObjectURL(f)}
                             alt={`New Upload ${idx}`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain p-1"
                           />
                           <span className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-primary text-primary-foreground">
                             NEW
@@ -712,31 +767,64 @@ export default function ProductModal({ product, categories = [], onClose, onSave
 
               {/* Matrix Variants List */}
               <div className="p-5 rounded-xl border border-border bg-card space-y-4">
-                <div className="flex items-center justify-between border-b border-border pb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
                   <div>
                     <h4 className="font-bold text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                       <Layers size={14} className="text-primary" /> Product SKU Variants ({variants.length})
                     </h4>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Configure SKUs with individual pricing, MRP strikethrough, and stock levels.
+                      Configure SKUs with individual weights, units, pricing, MRP strikethrough, and stock levels.
                     </p>
                   </div>
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-8 gap-1 text-xs"
-                    onClick={() => {
-                      const blank = { sku: '', price: '', mrp: '', stock: '', isActive: true, attrs: {} };
-                      if (activeTemplate?.variantDimensions) {
-                        activeTemplate.variantDimensions.forEach(d => { blank.attrs[d] = ''; });
-                      }
-                      setVariants(prev => [...prev, blank]);
-                    }}
-                  >
-                    <Plus size={13} /> Add Variant
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    {variants.length > 0 && form.price && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 text-xs text-muted-foreground hover:text-foreground"
+                        onClick={() => {
+                          setVariants(prev => prev.map(v => ({
+                            ...v,
+                            price: v.price || form.price,
+                            mrp: v.mrp || form.mrp,
+                            stock: v.stock || form.stock
+                          })));
+                        }}
+                        title="Copy base price and stock to variants that have empty fields"
+                      >
+                        Copy Base Price &amp; Stock
+                      </Button>
+                    )}
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-8 gap-1 text-xs"
+                      onClick={() => {
+                        const templateDims = activeTemplate?.variantDimensions || [];
+                        const existingKeys = [...new Set(variants.flatMap(v => Object.keys(v.attrs || {})))];
+                        const dims = templateDims.length > 0 ? templateDims : (existingKeys.length > 0 ? existingKeys : ['weight']);
+
+                        const initialAttrs = {};
+                        dims.forEach(d => { initialAttrs[d] = ''; });
+
+                        const blank = {
+                          sku: '',
+                          price: form.price || '',
+                          mrp: form.mrp || '',
+                          stock: form.stock || '',
+                          isActive: true,
+                          attrs: initialAttrs
+                        };
+                        setVariants(prev => [...prev, blank]);
+                      }}
+                    >
+                      <Plus size={13} /> Add Variant
+                    </Button>
+                  </div>
                 </div>
 
                 {variants.length === 0 ? (
@@ -745,104 +833,145 @@ export default function ProductModal({ product, categories = [], onClose, onSave
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {variants.map((variant, vi) => (
-                      <div key={vi} className="border border-border rounded-xl p-3.5 bg-muted/20 space-y-3">
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                          {activeTemplate?.variantDimensions?.map(dim => {
-                            const attrDef = (activeTemplate.attributes || []).find(a => a.key === dim);
-                            const val = variant.attrs?.[dim] ?? '';
+                    {variants.map((variant, vi) => {
+                      const templateDims = activeTemplate?.variantDimensions || [];
+                      const existingKeys = Object.keys(variant.attrs || {});
+                      const dims = templateDims.length > 0
+                        ? templateDims
+                        : (existingKeys.length > 0 ? existingKeys : ['weight']);
 
-                            return (
-                              <div key={dim} className="space-y-1">
-                                <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide block">
-                                  {attrDef?.label || dim.replace(/_/g, ' ')}
-                                </label>
-                                {attrDef?.type === 'select' || (attrDef?.options && attrDef.options.length > 0) ? (
-                                  <CustomSelect
-                                    size="sm"
-                                    placeholder="— Select —"
-                                    value={val}
-                                    onChange={newVal => setVariants(prev => prev.map((v, i) => i === vi ? { ...v, attrs: { ...(v.attrs || {}), [dim]: newVal } } : v))}
-                                    options={(attrDef?.options || []).map(o => ({ value: o, label: o }))}
-                                  />
-                                ) : (
+                      const mrpNum = Number(variant.mrp || 0);
+                      const priceNum = Number(variant.price || 0);
+                      const hasDiscount = mrpNum > priceNum && priceNum > 0;
+                      const discountPercent = hasDiscount ? Math.round(((mrpNum - priceNum) / mrpNum) * 100) : 0;
+
+                      return (
+                        <div key={vi} className="border border-border rounded-xl p-4 bg-muted/20 space-y-3 shadow-xs">
+                          {/* Variant Card Top Header */}
+                          <div className="flex items-center justify-between pb-2 border-b border-border/60">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-bold text-foreground">
+                                Variant #{vi + 1}
+                              </span>
+                              {priceNum > 0 && (
+                                <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                  ₹{priceNum.toLocaleString('en-IN')}
+                                </span>
+                              )}
+                              {hasDiscount && (
+                                <span className="text-[10px] font-semibold text-emerald-600">
+                                  ({discountPercent}% OFF)
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer font-medium">
+                                <Switch
+                                  checked={variant.isActive !== false}
+                                  onCheckedChange={v => setVariants(prev => prev.map((x, i) => i === vi ? { ...x, isActive: v } : x))}
+                                />
+                                <span className="text-[11px]">{variant.isActive !== false ? 'Active SKU' : 'Disabled'}</span>
+                              </label>
+
+                              <button
+                                type="button"
+                                onClick={() => setVariants(prev => prev.filter((_, i) => i !== vi))}
+                                className="text-muted-foreground hover:text-destructive p-1 rounded-md transition-colors"
+                                title="Delete Variant"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Variant Form Fields */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+                            {/* Dynamic Dimensions with Hybrid Input (Template options + Freeform Custom typing) */}
+                            {dims.map(dim => {
+                              const attrDef = (activeTemplate?.attributes || []).find(a => a.key === dim);
+                              const val = variant.attrs?.[dim] ?? '';
+                              const options = attrDef?.options || [];
+                              const label = attrDef?.label || dim.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                              const datalistId = `variant-opts-${dim}-${vi}`;
+
+                              return (
+                                <div key={dim} className="space-y-1">
+                                  <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide flex items-center justify-between">
+                                    <span>{label}{attrDef?.unit ? ` (${attrDef.unit})` : ''}</span>
+                                    {options.length > 0 && (
+                                      <span className="text-[9px] font-normal text-primary">Presets Available</span>
+                                    )}
+                                  </label>
                                   <Input
-                                    className="h-8 text-xs"
-                                    placeholder={attrDef?.label || dim}
+                                    className="h-9 text-xs"
+                                    placeholder={options[0] || `e.g. 250g, 500g`}
                                     value={val}
+                                    list={options.length > 0 ? datalistId : undefined}
                                     onChange={e => setVariants(prev => prev.map((v, i) => i === vi ? { ...v, attrs: { ...(v.attrs || {}), [dim]: e.target.value } } : v))}
                                   />
-                                )}
-                              </div>
-                            );
-                          })}
+                                  {options.length > 0 && (
+                                    <datalist id={datalistId}>
+                                      {options.map(opt => (
+                                        <option key={opt} value={opt} />
+                                      ))}
+                                    </datalist>
+                                  )}
+                                </div>
+                              );
+                            })}
 
-                          <div className="space-y-1">
-                            <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide block">SKU</label>
-                            <Input
-                              className="h-8 font-mono text-xs"
-                              placeholder="e.g. SKU-101"
-                              value={variant.sku || ''}
-                              onChange={e => setVariants(prev => prev.map((v, i) => i === vi ? { ...v, sku: e.target.value } : v))}
-                            />
-                          </div>
+                            <div className="space-y-1">
+                              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide block">SKU Code</label>
+                              <Input
+                                className="h-9 font-mono text-xs"
+                                placeholder="e.g. SKU-101"
+                                value={variant.sku || ''}
+                                onChange={e => setVariants(prev => prev.map((v, i) => i === vi ? { ...v, sku: e.target.value } : v))}
+                              />
+                            </div>
 
-                          <div className="space-y-1">
-                            <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide block">Price (₹)</label>
-                            <Input
-                              className="h-8 font-mono text-xs"
-                              type="number"
-                              min="0"
-                              placeholder="0"
-                              value={variant.price ?? ''}
-                              onChange={e => setVariants(prev => prev.map((v, i) => i === vi ? { ...v, price: Number(e.target.value) } : v))}
-                            />
-                          </div>
+                            <div className="space-y-1">
+                              <label className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wide block">
+                                Price (₹) <span className="text-destructive">*</span>
+                              </label>
+                              <Input
+                                className="h-9 font-mono text-xs font-bold border-emerald-300 dark:border-emerald-800 focus:border-emerald-500"
+                                type="number"
+                                min="0"
+                                placeholder="0"
+                                value={variant.price ?? ''}
+                                onChange={e => setVariants(prev => prev.map((v, i) => i === vi ? { ...v, price: Number(e.target.value) } : v))}
+                              />
+                            </div>
 
-                          <div className="space-y-1">
-                            <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide block">MRP (₹)</label>
-                            <Input
-                              className="h-8 font-mono text-xs"
-                              type="number"
-                              min="0"
-                              placeholder="0"
-                              value={variant.mrp ?? ''}
-                              onChange={e => setVariants(prev => prev.map((v, i) => i === vi ? { ...v, mrp: Number(e.target.value) } : v))}
-                            />
-                          </div>
+                            <div className="space-y-1">
+                              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide block">MRP (₹)</label>
+                              <Input
+                                className="h-9 font-mono text-xs"
+                                type="number"
+                                min="0"
+                                placeholder="0"
+                                value={variant.mrp ?? ''}
+                                onChange={e => setVariants(prev => prev.map((v, i) => i === vi ? { ...v, mrp: Number(e.target.value) } : v))}
+                              />
+                            </div>
 
-                          <div className="space-y-1">
-                            <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide block">Stock</label>
-                            <Input
-                              className="h-8 font-mono text-xs"
-                              type="number"
-                              min="0"
-                              placeholder="0"
-                              value={variant.stock ?? ''}
-                              onChange={e => setVariants(prev => prev.map((v, i) => i === vi ? { ...v, stock: Number(e.target.value) } : v))}
-                            />
+                            <div className="space-y-1">
+                              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide block">Stock Quantity</label>
+                              <Input
+                                className="h-9 font-mono text-xs"
+                                type="number"
+                                min="0"
+                                placeholder="0"
+                                value={variant.stock ?? ''}
+                                onChange={e => setVariants(prev => prev.map((v, i) => i === vi ? { ...v, stock: Number(e.target.value) } : v))}
+                              />
+                            </div>
                           </div>
                         </div>
-
-                        <div className="flex items-center justify-between pt-2 border-t border-border text-xs">
-                          <label className="flex items-center gap-2 text-muted-foreground cursor-pointer font-medium">
-                            <Switch
-                              checked={variant.isActive !== false}
-                              onCheckedChange={v => setVariants(prev => prev.map((x, i) => i === vi ? { ...x, isActive: v } : x))}
-                            />
-                            <span>Active SKU for Sale</span>
-                          </label>
-
-                          <button
-                            type="button"
-                            onClick={() => setVariants(prev => prev.filter((_, i) => i !== vi))}
-                            className="flex items-center gap-1 text-destructive hover:underline"
-                          >
-                            <Trash2 size={13} /> Remove
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>

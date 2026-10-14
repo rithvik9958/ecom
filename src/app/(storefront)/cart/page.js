@@ -304,13 +304,16 @@ export default function CartPage() {
       })
       .catch(err => console.error(err));
 
-    fetch('/api/store-coupons')
+    const token = typeof window !== 'undefined' ? localStorage.getItem('store_token') : null;
+    fetch('/api/store-coupons', {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
       .then(res => res.json())
       .then(data => {
         if (data.success) setAvailableCoupons(data.coupons);
       })
       .catch(err => console.error(err));
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -338,10 +341,14 @@ export default function CartPage() {
     setCouponError('');
     setIsApplyingCoupon(true);
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('store_token') : null;
       const res = await fetch('/api/store-coupons/validate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, cartTotal })
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ code, cartTotal, email: user?.email })
       });
       const data = await res.json();
       if (data.success) {
@@ -834,6 +841,8 @@ export default function CartPage() {
             id: i.productId, title: i.title, price: i.price, quantity: i.quantity, thumbnail: i.thumbnail,
           })),
           total: grandTotal,
+          couponCode: appliedCoupon?.code || null,
+          discountAmount: discountAmount || 0,
           paymentMethod: method,
           paymentStatus: method === 'cod' ? 'pending' : 'paid',
           deliverySlot: slotVal,

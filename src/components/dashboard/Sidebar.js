@@ -57,6 +57,7 @@ const NAV = [
       { label: 'Attribute Templates',   href: '/dashboard/ecommerce/attribute-templates' },
       { label: 'Add-on Categories',     href: '/dashboard/ecommerce/addon-categories' },
       { label: 'Add-ons',               href: '/dashboard/ecommerce/addons' },
+      { label: 'Coupons & Discounts',   href: '/dashboard/ecommerce/coupons' },
     ],
   },
   {

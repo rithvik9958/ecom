@@ -28,6 +28,7 @@ export async function POST(request) {
     const title = formData.get("title");
     const description = formData.get("description") || "";
     const category = formData.get("category");
+    const unit = formData.get("unit") || "pcs";
     const price = Number(formData.get("price")) || 0;
     const mrp = Number(formData.get("mrp")) || 0;
     const stock = Number(formData.get("stock")) || 0;
@@ -110,6 +111,7 @@ export async function POST(request) {
       title,
       description,
       category,
+      unit,
       price,
       mrp,
       discountedPrice,

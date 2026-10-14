@@ -16,6 +16,16 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#111827' },
+  ],
+};
+
 export async function generateMetadata() {
   let faviconUrl = '/favicon.ico';
   let brandName = 'EShop';

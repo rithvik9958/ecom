@@ -21,6 +21,8 @@ export default function StorefrontHeader({ categories = [] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [openCategoryIndex, setOpenCategoryIndex] = useState(null);
   const [searchVal, setSearchVal] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -32,6 +34,32 @@ export default function StorefrontHeader({ categories = [] }) {
   const [addressForm, setAddressForm] = useState({ name: '', phone: '', flat: '', locality: '', city: '', state: '', pincode: '', type: 'home' });
   const [isSavingAddress, setIsSavingAddress] = useState(false);
   const userMenuRef = useRef(null);
+
+  // Close mobile drawer and search row on navigation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMobileOpen(false);
+      setMobileSearchOpen(false);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
+  // Lock body scroll and listen for Escape key when mobile drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+      const handleKeyDown = (e) => {
+        if (e.key === 'Escape') setMobileOpen(false);
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [mobileOpen]);
 
   // ── Notifications Popover State ───────────────────────────────────────────
   const [notifications, setNotifications] = useState([]);
@@ -132,8 +160,6 @@ export default function StorefrontHeader({ categories = [] }) {
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const searchRef = useRef(null);
   const searchDebounceRef = useRef(null);
-
-  useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   // ── Load recent searches from localStorage ────────────────────────────────
   useEffect(() => {
@@ -250,6 +276,7 @@ export default function StorefrontHeader({ categories = [] }) {
       saveRecentSearch(q);
       router.push(`/products?search=${encodeURIComponent(q)}`);
       setSearchOpen(false);
+      setMobileSearchOpen(false);
     }
   }
 
@@ -358,7 +385,18 @@ export default function StorefrontHeader({ categories = [] }) {
       {/* ── Top bar ── */}
       <div className="fnp-header-top">
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="fnp-header-left" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Mobile Hamburger Menu Toggle */}
+          <button
+            type="button"
+            className="fnp-mobile-menu-toggle-btn"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open navigation menu"
+            id="mobile-menu-toggle"
+          >
+            <Menu size={22} />
+          </button>
+
           {/* Dynamic Brand Logo */}
           <Link href="/" className="fnp-logo" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
             <img
@@ -396,13 +434,13 @@ export default function StorefrontHeader({ categories = [] }) {
             <div className="fnp-location-modal" onClick={e => e.stopPropagation()}>
               <div className="fnp-modal-header">
                 <div className="fnp-modal-title">
-                  <MapPin size={20} /> Let's Personalize Your Experience!
+                  <MapPin size={20} /> Let&apos;s Personalize Your Experience!
                 </div>
                 <button className="fnp-modal-close" onClick={() => setLocationModalOpen(false)}>
                   <X size={20} />
                 </button>
               </div>
-              <p className="fnp-modal-sub">Find the perfect gifts for you or your loved ones - it's like magic!</p>
+              <p className="fnp-modal-sub">Find the perfect gifts for you or your loved ones - it&apos;s like magic!</p>
 
               <div className="fnp-modal-body">
                 {user && addresses && addresses.length > 0 && !showAddressForm && (
@@ -733,7 +771,7 @@ export default function StorefrontHeader({ categories = [] }) {
                       </Link>
                     );
                   }) : !isSearchLoading && (
-                    <div className="fnp-search-no-results">No products found for "{searchVal}"</div>
+                    <div className="fnp-search-no-results">No products found for &quot;{searchVal}&quot;</div>
                   )}
                 </div>
               )}
@@ -743,6 +781,18 @@ export default function StorefrontHeader({ categories = [] }) {
 
         {/* Right Action Icons */}
         <div className="fnp-header-actions">
+          {/* Mobile Search Trigger Icon */}
+          <button
+            type="button"
+            className="fnp-icon-btn fnp-mobile-search-trigger-btn"
+            id="mobile-header-search-btn"
+            onClick={() => setMobileSearchOpen(prev => !prev)}
+            aria-label="Search products"
+            title="Search"
+          >
+            <Search size={21} />
+          </button>
+
           {/* Track Order Header Action */}
           <Link href="/track-order" className="fnp-icon-btn" id="track-order-icon-btn" title="Track Order">
             <Truck size={22} />
@@ -1083,18 +1133,110 @@ export default function StorefrontHeader({ categories = [] }) {
             )}
           </div>
 
-          {/* Mobile menu toggle */}
-          <button
-            className="fnp-icon-btn"
-            style={{ display: 'none' }}
-            onClick={() => setMobileOpen((o) => !o)}
-            aria-label="Menu"
-            id="mobile-menu-toggle"
-          >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
         </div>
       </div>
+
+      {/* ── Collapsible Mobile Search Row ── */}
+      {mobileSearchOpen && (
+        <div className="fnp-mobile-header-search-row">
+          <form className="fnp-mobile-search-form" onSubmit={handleSearch}>
+            <Search size={18} className="fnp-mobile-search-input-icon" />
+            <input
+              type="text"
+              placeholder="Search products, categories..."
+              value={searchVal}
+              onChange={handleSearchChange}
+              autoFocus
+              className="fnp-mobile-search-input"
+            />
+            {searchVal && (
+              <button
+                type="button"
+                onClick={() => setSearchVal('')}
+                className="fnp-mobile-search-clear-btn"
+                aria-label="Clear input"
+              >
+                <X size={15} />
+              </button>
+            )}
+            <button type="submit" className="fnp-mobile-search-submit-btn" aria-label="Submit search">
+              <ArrowRight size={16} />
+            </button>
+            <button
+              type="button"
+              className="fnp-mobile-search-close-btn"
+              onClick={() => setMobileSearchOpen(false)}
+              aria-label="Close search"
+            >
+              <X size={18} />
+            </button>
+          </form>
+
+          {/* Autocomplete Dropdown for Mobile */}
+          {(searchVal.length >= 1 || recentSearches.length > 0) && (
+            <div className="fnp-mobile-search-dropdown">
+              {recentSearches.length > 0 && searchVal.length < 1 && (
+                <div className="fnp-search-dropdown-section">
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px 6px' }}>
+                    <span className="fnp-search-section-label">Recent Searches</span>
+                    <button className="fnp-search-clear-btn" onClick={clearRecentSearches}>Clear</button>
+                  </div>
+                  {recentSearches.map((s, i) => (
+                    <div
+                      key={i}
+                      className="fnp-search-recent-row"
+                      onClick={() => {
+                        setSearchVal(s);
+                        router.push(`/products?search=${encodeURIComponent(s)}`);
+                        setMobileSearchOpen(false);
+                      }}
+                    >
+                      <Clock size={14} style={{ flexShrink: 0, color: 'var(--fnp-gray-300)' }} />
+                      <span>{s}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {searchVal.length >= 1 && (
+                <div className="fnp-search-dropdown-section">
+                  <span className="fnp-search-section-label" style={{ padding: '0 4px 6px', display: 'block' }}>
+                    {isSearchLoading ? 'Searching...' : suggestions.length > 0 ? `${suggestions.length} Products found` : 'No results'}
+                  </span>
+                  {suggestions.length > 0 ? suggestions.map((prod) => {
+                    const thumb = prod.thumbnail || prod.images?.[0];
+                    const price = prod.discountedPrice > 0 ? prod.discountedPrice : prod.price;
+                    return (
+                      <Link
+                        key={prod.id || prod._id}
+                        href={`/products/${prod.id || prod._id}`}
+                        className="fnp-search-product-row"
+                        onClick={() => {
+                          saveRecentSearch(searchVal);
+                          setMobileSearchOpen(false);
+                          setSearchVal('');
+                        }}
+                      >
+                        {thumb
+                          ? <img src={thumb.startsWith('http') ? thumb : `${process.env.NEXT_PUBLIC_BASE_URL || ''}${thumb}`} alt="" className="fnp-search-product-thumb" />
+                          : <div className="fnp-search-product-thumb" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>🌸</div>
+                        }
+                        <div className="fnp-search-product-info">
+                          <div className="fnp-search-product-title">{prod.title}</div>
+                          <div className="fnp-search-product-price">₹{price?.toLocaleString('en-IN')}</div>
+                        </div>
+                        <ArrowRight size={14} style={{ flexShrink: 0, color: 'var(--fnp-gray-300)' }} />
+                      </Link>
+                    );
+                  }) : !isSearchLoading && (
+                    <div className="fnp-search-no-results" style={{ padding: '8px' }}>No products found for &quot;{searchVal}&quot;</div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── Nav bar ── */}
       <nav className="fnp-navbar">
@@ -1151,6 +1293,244 @@ export default function StorefrontHeader({ categories = [] }) {
           ))}
         </div>
       </nav>
+
+      {/* ── Slide-Over Mobile Navigation Drawer ── */}
+      {mobileOpen && (
+        <div
+          className="fnp-mobile-drawer-root"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation drawer"
+        >
+          {/* Backdrop */}
+          <div
+            className="fnp-drawer-backdrop"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Sliding Panel */}
+          <div className="fnp-drawer-panel">
+            {/* Header: Brand & Close */}
+            <div className="fnp-drawer-header">
+              <Link
+                href="/"
+                onClick={() => setMobileOpen(false)}
+                className="fnp-drawer-logo"
+              >
+                <img
+                  src={(themeMode === 'dark' && themeData?.darkLogo) ? themeData.darkLogo : (themeData?.logo || '/logo.png')}
+                  alt={themeData?.brandName || 'EShop'}
+                  style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+                />
+              </Link>
+              <button
+                type="button"
+                className="fnp-drawer-close-btn"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close navigation menu"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Scrollable Content Body */}
+            <div className="fnp-drawer-body">
+              {/* Delivery Location Card */}
+              <div
+                className="fnp-drawer-location-card"
+                onClick={() => {
+                  setMobileOpen(false);
+                  setLocationModalSource('header');
+                  setLocationModalOpen(true);
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <div className="fnp-drawer-location-icon">
+                  <MapPin size={18} />
+                </div>
+                <div className="fnp-drawer-location-info">
+                  <div className="fnp-drawer-location-title">
+                    {deliveryLocation ? `Deliver to ${deliveryLocation.name || (deliveryLocation.city && deliveryLocation.city !== deliveryLocation.pincode ? deliveryLocation.city : deliveryLocation.pincode)}` : 'Where to deliver?'}
+                  </div>
+                  <div className="fnp-drawer-location-sub">
+                    {deliveryLocation ? deliveryLocation.full : 'Tap to select pincode or address'}
+                  </div>
+                </div>
+                <ChevronRight size={16} className="fnp-drawer-arrow" />
+              </div>
+
+              {/* User Account / Auth Card */}
+              {user ? (
+                <div className="fnp-drawer-user-card">
+                  {user.profileImage ? (
+                    <img src={user.profileImage} alt={user.name} className="fnp-drawer-user-avatar" />
+                  ) : (
+                    <div className="fnp-drawer-user-avatar fnp-drawer-user-avatar-initials">
+                      {user.name?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                  )}
+                  <div className="fnp-drawer-user-details">
+                    <div className="fnp-drawer-user-name">{user.name}</div>
+                    <div className="fnp-drawer-user-email">{user.email}</div>
+                  </div>
+                  <Link
+                    href="/user"
+                    onClick={() => setMobileOpen(false)}
+                    className="fnp-drawer-user-view-btn"
+                  >
+                    Account
+                  </Link>
+                </div>
+              ) : (
+                <div className="fnp-drawer-guest-card">
+                  <div className="fnp-drawer-guest-text">
+                    <strong>Welcome to our store</strong>
+                    <span>Sign in to manage orders &amp; wishlist</span>
+                  </div>
+                  <div className="fnp-drawer-guest-btns">
+                    <Link
+                      href={`/login?redirect=${encodeURIComponent(safeRedirect)}`}
+                      onClick={() => setMobileOpen(false)}
+                      className="fnp-drawer-btn-login"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href={`/register?redirect=${encodeURIComponent(safeRedirect)}`}
+                      onClick={() => setMobileOpen(false)}
+                      className="fnp-drawer-btn-register"
+                    >
+                      Register
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* Quick Navigation Action Grid */}
+              <div className="fnp-drawer-quick-grid">
+                <Link href="/track-order" onClick={() => setMobileOpen(false)} className="fnp-drawer-quick-card">
+                  <Truck size={18} />
+                  <span>Track Order</span>
+                </Link>
+                <Link href="/user/wishlist" onClick={() => setMobileOpen(false)} className="fnp-drawer-quick-card">
+                  <div className="relative" style={{ display: 'flex', alignItems: 'center' }}>
+                    <Heart size={18} />
+                    {wishlistCount > 0 && <span className="fnp-cart-badge" style={{ top: '-4px', right: '-8px' }}>{wishlistCount}</span>}
+                  </div>
+                  <span>Wishlist</span>
+                </Link>
+                <Link href="/orders" onClick={() => setMobileOpen(false)} className="fnp-drawer-quick-card">
+                  <Package size={18} />
+                  <span>My Orders</span>
+                </Link>
+                <Link href="/user/coupons" onClick={() => setMobileOpen(false)} className="fnp-drawer-quick-card">
+                  <Ticket size={18} />
+                  <span>Coupons</span>
+                </Link>
+              </div>
+
+              {/* Category Accordion Navigation */}
+              <div className="fnp-drawer-nav-section">
+                <div className="fnp-drawer-section-heading">Categories &amp; Collections</div>
+                <div className="fnp-drawer-accordion-list">
+                  {navLinks.map((link, idx) => {
+                    const hasSub = link.megaMenu && link.megaMenu.columns?.length > 0;
+                    const isExpanded = openCategoryIndex === idx;
+
+                    if (!hasSub) {
+                      return (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setMobileOpen(false)}
+                          className={`fnp-drawer-nav-link ${pathname === link.href ? 'active' : ''}`}
+                        >
+                          <span>{link.label}</span>
+                          <ChevronRight size={16} className="fnp-drawer-arrow" />
+                        </Link>
+                      );
+                    }
+
+                    return (
+                      <div key={link.href || idx} className="fnp-drawer-accordion-item">
+                        <div className="fnp-drawer-accordion-header">
+                          <Link
+                            href={link.href}
+                            onClick={() => setMobileOpen(false)}
+                            className={`fnp-drawer-nav-link ${pathname === link.href ? 'active' : ''}`}
+                            style={{ flex: 1 }}
+                          >
+                            <span>{link.label}</span>
+                          </Link>
+                          <button
+                            type="button"
+                            className={`fnp-drawer-chevron-btn ${isExpanded ? 'expanded' : ''}`}
+                            onClick={() => setOpenCategoryIndex(isExpanded ? null : idx)}
+                            aria-label={isExpanded ? `Collapse ${link.label}` : `Expand ${link.label}`}
+                          >
+                            <ChevronDown size={16} />
+                          </button>
+                        </div>
+
+                        {isExpanded && (
+                          <div className="fnp-drawer-submenu">
+                            {link.megaMenu.columns.map((col, colIdx) => (
+                              <div key={colIdx} className="fnp-drawer-subcolumn">
+                                <div className="fnp-drawer-subcolumn-title">{col.title}</div>
+                                <div className="fnp-drawer-subcolumn-links">
+                                  {col.links?.map((item, itemIdx) => (
+                                    <Link
+                                      key={itemIdx}
+                                      href={item.url || '#'}
+                                      onClick={() => setMobileOpen(false)}
+                                      className="fnp-drawer-sublink"
+                                    >
+                                      <span>{item.label}</span>
+                                      {item.badge && <span className="fnp-mega-new-badge">{item.badge}</span>}
+                                    </Link>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Drawer Footer */}
+            <div className="fnp-drawer-footer">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="fnp-drawer-theme-btn"
+                title={themeMode === 'dark' ? 'Switch to Crisp Light Mode' : 'Switch to Luxury Dark Mode'}
+              >
+                {themeMode === 'dark' ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} />}
+                <span>{themeMode === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+              </button>
+              {user && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setMobileOpen(false);
+                  }}
+                  className="fnp-drawer-logout-btn"
+                >
+                  <LogOut size={16} />
+                  <span>Logout</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

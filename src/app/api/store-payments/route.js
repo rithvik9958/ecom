@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 import Stripe from 'stripe';
 import { getEcomOrder } from '@/app/models/EcomOrder';
 import { verifyCustomerToken } from '@/app/lib/customerAuth';
+import { decrementStockForItems } from '@/lib/stockManager';
 import mongoose from 'mongoose';
 
 const stripe = process.env.STRIPE_SECRET_KEY
@@ -50,6 +51,8 @@ export async function POST(request) {
       deliverySlot,
       deliveryDate,
     });
+
+    await decrementStockForItems(items);
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
