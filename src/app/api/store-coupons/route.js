@@ -47,6 +47,9 @@ export async function GET(request) {
       // Exclude global usage cap reached
       if (c.usageLimit > 0 && (c.usedCount || 0) >= c.usageLimit) return false;
 
+      // Exclude secret / hidden digital coupons (manual entry only)
+      if (c.isSecret) return false;
+
       // Handle audience restrictions
       if (c.targetAudience === 'specific_customer') {
         // Only visible if user is logged in and email matches

@@ -633,6 +633,11 @@ export default function ProductModal({ product, categories = [], onClose, onSave
                     onChange={handleGalleryChange}
                     className="flex h-10 w-full rounded-lg border border-border bg-background px-3 py-2 text-xs file:border-0 file:bg-transparent file:text-xs file:font-semibold file:text-primary cursor-pointer"
                   />
+                  <div className="text-xs text-muted-foreground flex items-center gap-1.5 -mt-2">
+                    <span>📐 Recommended Gallery Photos:</span>
+                    <strong className="font-mono text-primary font-semibold">1000 × 1000 px (1:1 Square)</strong>
+                    <span className="text-[11px]">— Consistent square aspect ratio ensures smooth slideshow and zoom.</span>
+                  </div>
 
                   {(existingImages.length > 0 || galleryFiles.length > 0) ? (
                     <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-3 pt-2">

@@ -61,7 +61,8 @@ export async function PUT(request, props) {
       targetAudience,
       targetEmail,
       maxUsesPerUser,
-      usageLimit
+      usageLimit,
+      isSecret
     } = body;
 
     if (code) {
@@ -115,6 +116,9 @@ export async function PUT(request, props) {
     }
     if (usageLimit !== undefined) {
       coupon.usageLimit = Math.max(0, Number(usageLimit) || 0);
+    }
+    if (typeof isSecret === 'boolean') {
+      coupon.isSecret = isSecret;
     }
 
     await coupon.save();

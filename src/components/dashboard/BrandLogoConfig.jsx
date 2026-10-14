@@ -19,7 +19,7 @@ export default function BrandLogoConfig() {
     favicon: '/favicon.ico',
     adminLogo: '',
     adminTitle: 'EShop Admin',
-    logoHeight: 48,
+    logoHeight: 58,
     primaryColor: '#111111',
     accentColor: '#c59b27',
   });
@@ -43,7 +43,7 @@ export default function BrandLogoConfig() {
           favicon: data.theme.favicon || '/favicon.ico',
           adminLogo: data.theme.adminLogo || '',
           adminTitle: data.theme.adminTitle || 'EShop Admin',
-          logoHeight: data.theme.logoHeight || 48,
+          logoHeight: data.theme.logoHeight || 58,
           primaryColor: data.theme.primaryColor || '#111111',
           accentColor: data.theme.accentColor || '#c59b27',
         });
@@ -246,6 +246,9 @@ export default function BrandLogoConfig() {
                   placeholder="Or paste direct image URL (/logo.png)"
                   className="w-full h-9 px-3 text-xs rounded-lg border border-input bg-background text-foreground"
                 />
+                <p className="text-[11px] text-muted-foreground leading-tight">
+                  📐 Recommended: <span className="font-mono text-primary font-semibold">240 × 60 px to 320 × 80 px</span> (~4:1 or 3:1 aspect ratio). Use transparent PNG or SVG for crisp display.
+                </p>
               </div>
             </div>
           </div>
@@ -307,6 +310,9 @@ export default function BrandLogoConfig() {
                     placeholder="Or paste dark logo URL"
                     className="w-full h-9 px-3 text-xs rounded-lg border border-input bg-background text-foreground"
                   />
+                  <p className="text-[11px] text-muted-foreground leading-tight">
+                    📐 Recommended: <span className="font-mono text-indigo-400 font-semibold">240 × 60 px to 320 × 80 px</span> with white/light artwork and transparent background.
+                  </p>
                 </div>
               </div>
             ) : (
@@ -353,6 +359,9 @@ export default function BrandLogoConfig() {
                     className="flex-1 h-9 px-3 text-xs rounded-xl border border-input bg-background text-foreground"
                   />
                 </div>
+                <p className="text-[11px] text-muted-foreground">
+                  📐 Recommended: <span className="font-mono text-primary font-semibold">64 × 64 px or 128 × 128 px (1:1 Square)</span> PNG or ICO.
+                </p>
               </div>
             </div>
 
@@ -463,6 +472,9 @@ export default function BrandLogoConfig() {
                       </button>
                     )}
                   </div>
+                  <p className="text-[11px] text-muted-foreground leading-tight">
+                    📐 Recommended: <span className="font-mono text-primary font-semibold">120 × 120 px (1:1 Square icon)</span> or <span className="font-mono text-primary font-semibold">200 × 50 px</span> transparent PNG.
+                  </p>
                 </div>
               </div>
             </div>

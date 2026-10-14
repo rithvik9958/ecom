@@ -140,10 +140,11 @@ export default function AddonModal({ addon, onClose, onSave }) {
               <div 
                 className="w-full aspect-square border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors overflow-hidden relative bg-muted/20"
                 onClick={() => fileInputRef.current?.click()}
+                title="Click to upload 400x400 square addon image"
               >
                 {preview ? (
                   <>
-                    <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                    <img src={preview} alt="Preview" className="w-full h-full object-contain p-1 bg-white dark:bg-zinc-900" />
                     <button 
                       type="button" 
                       onClick={(e) => { e.stopPropagation(); setImageFile(null); setPreview(null); }}
@@ -163,6 +164,9 @@ export default function AddonModal({ addon, onClose, onSave }) {
                   accept="image/*" 
                 />
               </div>
+              <span className="text-[10px] text-muted-foreground text-center font-mono font-medium leading-tight">
+                400 × 400 px (1:1)
+              </span>
             </div>
           </div>
 

@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { 
   Edit2, Trash2, Ticket, Percent, IndianRupee, Clock, 
-  Copy, Check, Users, UserPlus, Mail, Repeat 
+  Copy, Check, Users, UserPlus, Mail, Repeat, EyeOff 
 } from 'lucide-react';
 import CouponModal from './CouponModal';
 
@@ -171,7 +171,7 @@ export default function CouponsPage() {
       render: (row) => {
         const isCopied = copiedId === row._id;
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="font-mono font-bold tracking-wider text-xs px-2.5 py-1 rounded-md bg-primary/10 text-primary border border-primary/20">
               {row.code}
             </span>
@@ -186,6 +186,11 @@ export default function CouponsPage() {
             >
               {isCopied ? <Check size={13} className="text-emerald-600 dark:text-emerald-400" /> : <Copy size={13} />}
             </button>
+            {row.isSecret && (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30" title="Hidden/Secret Coupon - Manual Entry Only">
+                <EyeOff size={11} /> Secret
+              </span>
+            )}
           </div>
         );
       }

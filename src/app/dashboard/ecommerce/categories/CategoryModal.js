@@ -251,8 +251,8 @@ export default function CategoryModal({ category, onClose, onSave }) {
                 </label>
                 <div className="flex items-center gap-4">
                   {preview ? (
-                    <div className="relative w-20 h-20 border border-border rounded-xl overflow-hidden bg-muted shadow-xs">
-                      <img src={preview.startsWith('http') || preview.startsWith('blob:') ? preview : `${process.env.NEXT_PUBLIC_BASE_URL || ''}${preview}`} alt="Preview" className="w-full h-full object-cover" />
+                    <div className="relative w-20 h-20 border border-border rounded-xl overflow-hidden bg-white dark:bg-zinc-900 shadow-xs flex items-center justify-center p-1">
+                      <img src={preview.startsWith('http') || preview.startsWith('blob:') ? preview : `${process.env.NEXT_PUBLIC_BASE_URL || ''}${preview}`} alt="Preview" className="w-full h-full object-contain" />
                       <button 
                         type="button" 
                         onClick={() => { setFile(null); setPreview(null); }}
@@ -269,7 +269,14 @@ export default function CategoryModal({ category, onClose, onSave }) {
                   )}
                   <div className="flex-1 space-y-1.5">
                     <Input type="file" accept="image/*" onChange={handleFileChange} className="text-xs h-9" />
-                    <p className="text-[11px] text-muted-foreground">Recommended size: 400x400px (WebP, JPG, PNG)</p>
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                        📐 Standard Size: <span className="font-mono text-primary font-bold">500 × 500 px (1:1 Square)</span>
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">
+                        Transparent PNG or white background with 10% breathing space so circle badges and cards never cut off edges.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -400,6 +407,9 @@ export default function CategoryModal({ category, onClose, onSave }) {
                     <Plus size={14} className="mr-1" /> Add Slide
                   </Button>
                 </div>
+                <p className="text-[11px] text-muted-foreground">
+                  📐 Recommended Slide Image: <span className="font-mono text-primary font-semibold">600 × 600 px (1:1)</span> or <span className="font-mono text-primary font-semibold">800 × 600 px (4:3)</span>
+                </p>
                 {(plpCarouselSettings.customSlides || []).map((slide, sIdx) => (
                   <div key={sIdx} className="flex items-center gap-2 p-2 border rounded-md bg-muted/10">
                     <Input 

@@ -467,6 +467,9 @@ export default function AboutPageCMS() {
                   </div>
                 )}
                 <div className="flex-1 space-y-2">
+                  <p className="text-xs text-muted-foreground">
+                    📐 Recommended: <span className="font-mono text-primary font-semibold">1920 × 600 px (16:5 / 21:9)</span> horizontal landscape banner.
+                  </p>
                   <input
                     type="file"
                     accept="image/*"
@@ -712,11 +715,14 @@ export default function AboutPageCMS() {
                     <div className="w-full h-56 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-slate-400 text-xs">
                       <Upload size={28} className="mb-2 text-slate-400" />
                       <span className="font-semibold">Upload atelier / team / floral studio photo</span>
-                      <span className="text-[10px] text-slate-400 mt-0.5">Recommended size: 800 x 600px</span>
+                      <span className="text-[10px] text-slate-400 mt-0.5">📐 Recommended size: 800 × 600 px (4:3) or 1000 × 750 px</span>
                     </div>
                   )}
 
                   <div className="space-y-3">
+                    <p className="text-xs text-muted-foreground">
+                      📐 Recommended: <span className="font-mono text-primary font-semibold">800 × 600 px (4:3)</span> landscape photo with 10% edge padding.
+                    </p>
                     <input
                       type="file"
                       accept="image/*"
@@ -950,6 +956,9 @@ export default function AboutPageCMS() {
                           placeholder="Or paste image URL (SVG/PNG)..."
                           className="w-full text-[11px] p-1.5 rounded border border-slate-200 dark:border-slate-700 bg-background text-foreground"
                         />
+                        <span className="text-[10px] text-muted-foreground block">
+                          📐 Recommended: <span className="font-mono text-primary font-semibold">200 × 200 px (1:1)</span> SVG or transparent PNG.
+                        </span>
                       </div>
                     </div>
                   </div>

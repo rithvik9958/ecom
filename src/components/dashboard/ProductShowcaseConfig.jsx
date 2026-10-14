@@ -346,7 +346,7 @@ export default function ProductShowcaseConfig({ config, onChange }) {
                 </label>
                 <div className="relative aspect-[4/5] rounded-xl border-2 border-dashed border-border overflow-hidden bg-muted/30 group flex items-center justify-center">
                   {currentProduct._preview || currentProduct.image ? (
-                    <img src={currentProduct._preview || getImgSrc(currentProduct.image)} className="w-full h-full object-cover" alt="preview" />
+                    <img src={currentProduct._preview || getImgSrc(currentProduct.image)} className="w-full h-full object-contain p-2 bg-white dark:bg-zinc-900" alt="preview" />
                   ) : (
                     <div className="text-center text-muted-foreground p-4">
                       <ImageIcon size={28} className="mx-auto mb-2 opacity-50" />
@@ -363,6 +363,9 @@ export default function ProductShowcaseConfig({ config, onChange }) {
                     <span className="text-white text-xs font-semibold bg-black/50 px-2.5 py-1 rounded-md">Change Image</span>
                   </div>
                 </div>
+                <p className="text-[11px] text-muted-foreground text-center font-medium leading-tight">
+                  📐 Recommended: <span className="font-mono text-primary font-semibold">800 × 1000 px (4:5)</span> or <span className="font-mono text-primary font-semibold">1000 × 1000 px</span>
+                </p>
               </div>
 
               {/* Fields side */}

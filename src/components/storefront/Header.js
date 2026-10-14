@@ -402,7 +402,7 @@ export default function StorefrontHeader({ categories = [] }) {
             <img
               src={(themeMode === 'dark' && themeData?.darkLogo) ? themeData.darkLogo : (themeData?.logo || '/logo.png')}
               alt={themeData?.brandName || 'EShop'}
-              style={{ height: themeData?.logoHeight ? `${themeData.logoHeight}px` : '48px', width: 'auto', objectFit: 'contain' }}
+              style={{ height: themeData?.logoHeight ? `${Math.max(themeData.logoHeight, 56)}px` : '58px', width: 'auto', maxHeight: '68px', objectFit: 'contain' }}
             />
           </Link>
 
@@ -1321,7 +1321,7 @@ export default function StorefrontHeader({ categories = [] }) {
                 <img
                   src={(themeMode === 'dark' && themeData?.darkLogo) ? themeData.darkLogo : (themeData?.logo || '/logo.png')}
                   alt={themeData?.brandName || 'EShop'}
-                  style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+                  style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
                 />
               </Link>
               <button

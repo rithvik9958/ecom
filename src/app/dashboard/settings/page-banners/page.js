@@ -283,16 +283,23 @@ export default function PageBanners() {
                 
                 <FloatingInput id="banner-title" name="title" label="Heading Text *" defaultValue={modal?.title || ''} required rightElement={<AIAssistantButton context="Page Banner" field="Catchy Banner Heading" onGenerate={(val) => { const el = document.getElementById('banner-title'); if(el) el.value = val; }} />} />
 
-                <div className="border border-input/60 rounded-xl p-6 bg-muted/10">
-                  <label className="text-sm font-semibold text-foreground/80 mb-1 block">Banner Image</label>
-                  <p className="text-[11px] text-muted-foreground mb-3">Recommended size: 1920x680px</p>
+                <div className="border border-input/60 rounded-xl p-6 bg-muted/10 space-y-2">
+                  <label className="text-sm font-semibold text-foreground/80 block">Banner Image</label>
+                  <div className="space-y-0.5">
+                    <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      📐 Standard Dimensions: <span className="font-mono text-primary font-bold">1920 × 600 px (Desktop 16:5 / 21:9)</span>
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      Keep text and key subjects inside the center 60% safe zone to ensure crisp, uncropped presentation across all mobile and tablet screens.
+                    </p>
+                  </div>
                   <input name="image" type="file" accept="image/*" onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
                       setPreviewImage(URL.createObjectURL(e.target.files[0]))
                     }
                   }} className="flex h-11 w-full rounded-xl border border-input/60 bg-background px-4 py-2 text-sm transition-all file:border-0 file:bg-transparent file:text-sm file:font-semibold file:text-primary cursor-pointer hover:border-input" />
                   {previewImage && (
-                    <img src={previewImage} alt="preview" className="mt-4 max-h-32 rounded-lg border border-border shadow-sm object-cover" />
+                    <img src={previewImage} alt="preview" className="mt-3 max-h-36 rounded-lg border border-border shadow-xs object-contain bg-white dark:bg-zinc-900 p-1" />
                   )}
                 </div>
               </div>

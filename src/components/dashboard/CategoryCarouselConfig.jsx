@@ -323,7 +323,7 @@ export default function CategoryCarouselConfig({ config, onChange }) {
                 </label>
                 <div className="relative aspect-square rounded-xl border-2 border-dashed border-border overflow-hidden bg-muted/30 group flex items-center justify-center">
                   {currentCategory._preview || currentCategory.image ? (
-                    <img src={currentCategory._preview || getImgSrc(currentCategory.image)} className="w-full h-full object-cover" alt="preview" />
+                    <img src={currentCategory._preview || getImgSrc(currentCategory.image)} className="w-full h-full object-contain p-2 bg-white dark:bg-zinc-900" alt="preview" />
                   ) : (
                     <div className="text-center text-muted-foreground p-4">
                       <ImageIcon size={24} className="mx-auto mb-2 opacity-50" />
@@ -340,6 +340,9 @@ export default function CategoryCarouselConfig({ config, onChange }) {
                     <span className="text-white text-xs font-semibold bg-black/50 px-2.5 py-1 rounded-md">Change Image</span>
                   </div>
                 </div>
+                <p className="text-[11px] text-muted-foreground text-center font-medium leading-tight">
+                  📐 Recommended: <span className="font-mono text-primary font-semibold">500 × 500 px (1:1)</span>
+                </p>
               </div>
 
               {/* Fields side */}

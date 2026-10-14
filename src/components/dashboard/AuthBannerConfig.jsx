@@ -216,7 +216,7 @@ export default function AuthBannerConfig() {
                   </label>
                 </div>
                 <p className="text-[11px] text-muted-foreground mt-1">
-                  Recommended: High-resolution horizontal landscape/lifestyle image (16:9 or 4:3).
+                  📐 Recommended: <span className="font-mono text-primary font-semibold">1080 × 1920 px (9:16 Portrait)</span> or <span className="font-mono text-primary font-semibold">1200 × 1600 px (3:4)</span> for the vertical split-screen auth showcase.
                 </p>
               </div>
 

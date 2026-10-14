@@ -68,7 +68,8 @@ export async function POST(request) {
       targetAudience,
       targetEmail,
       maxUsesPerUser,
-      usageLimit
+      usageLimit,
+      isSecret
     } = body;
 
     if (!code || !code.trim()) {
@@ -116,7 +117,8 @@ export async function POST(request) {
       targetEmail: audience === 'specific_customer' ? targetEmail.trim().toLowerCase() : '',
       maxUsesPerUser: maxUsesPerUser !== undefined ? Number(maxUsesPerUser) : 1,
       usageLimit: Number(usageLimit) || 0,
-      usedCount: 0
+      usedCount: 0,
+      isSecret: Boolean(isSecret)
     });
 
     return Response.json({ success: true, coupon: { ...created.toObject(), _id: created._id.toString() } }, { status: 201 });

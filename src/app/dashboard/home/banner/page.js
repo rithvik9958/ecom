@@ -359,6 +359,14 @@ export default function BannerPage() {
               <label className="text-sm font-semibold text-foreground/80 block">
                 {modal === 'new' ? 'Banner Image *' : 'Replace Banner Image (Optional)'}
               </label>
+              <div className="space-y-0.5">
+                <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                  📐 Standard Dimensions: <span className="font-mono text-primary font-bold">1920 × 600 px (Desktop 16:5 / 21:9)</span>
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  Mobile display crops to center (or 800 × 1000 px portrait). Position focal artwork and headlines within the center safe zone.
+                </p>
+              </div>
               <input
                 type="file"
                 accept="image/*"
@@ -366,8 +374,8 @@ export default function BannerPage() {
                 className="flex h-11 w-full rounded-xl border border-input/60 bg-background px-4 py-2 text-sm transition-all file:border-0 file:bg-transparent file:text-sm file:font-semibold file:text-primary cursor-pointer hover:border-input"
               />
               {preview && (
-                <div className="w-32 h-20 rounded-lg overflow-hidden border border-border mt-2 bg-muted p-1 flex items-center justify-center">
-                  <img src={preview} alt="preview" className="max-w-full max-h-full object-cover" />
+                <div className="w-40 h-20 rounded-lg overflow-hidden border border-border mt-2 bg-white dark:bg-zinc-900 p-1 flex items-center justify-center">
+                  <img src={preview} alt="preview" className="max-w-full max-h-full object-contain" />
                 </div>
               )}
             </div>

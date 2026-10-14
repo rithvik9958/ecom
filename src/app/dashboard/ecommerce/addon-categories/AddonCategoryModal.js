@@ -87,7 +87,7 @@ export default function AddonCategoryModal({ category, onClose, onSave, onToast 
               onClick={() => fileInputRef.current?.click()}
             >
               {preview ? (
-                <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                <img src={preview} alt="Preview" className="w-full h-full object-contain p-2 bg-white dark:bg-zinc-900" />
               ) : (
                 <Upload className="w-6 h-6 text-muted-foreground" />
               )}
@@ -99,7 +99,8 @@ export default function AddonCategoryModal({ category, onClose, onSave, onToast 
                 accept="image/*"
               />
             </div>
-            <span className="text-xs text-muted-foreground mt-2">Click to upload category icon</span>
+            <span className="text-xs text-muted-foreground mt-2 font-medium">Click to upload category icon</span>
+            <span className="text-[10px] text-primary font-mono font-semibold">Recommended: 300 × 300 px (1:1 Transparent PNG)</span>
           </div>
 
           <FloatingInput 

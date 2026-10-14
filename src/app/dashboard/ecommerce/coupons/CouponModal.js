@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { Ticket, Percent, IndianRupee, Calendar, AlertCircle, Sparkles, Check, Clock, Users, UserPlus, Mail, Repeat } from 'lucide-react';
+import { Ticket, Percent, IndianRupee, Calendar, AlertCircle, Sparkles, Check, Clock, Users, UserPlus, Mail, Repeat, EyeOff, Eye } from 'lucide-react';
 
 export default function CouponModal({ coupon, onClose, onSave }) {
   const isEdit = Boolean(coupon && coupon !== 'new');
@@ -19,6 +19,7 @@ export default function CouponModal({ coupon, onClose, onSave }) {
       ? new Date(coupon.expiresAt).toISOString().slice(0, 10)
       : '',
     isActive: isEdit ? (coupon.isActive !== false) : true,
+    isSecret: isEdit ? Boolean(coupon.isSecret) : false,
     targetAudience: isEdit ? (coupon.targetAudience || 'all') : 'all',
     targetEmail: isEdit ? (coupon.targetEmail || '') : '',
     maxUsesPerUser: isEdit ? (coupon.maxUsesPerUser ?? 1) : 1,
@@ -68,6 +69,7 @@ export default function CouponModal({ coupon, onClose, onSave }) {
         minOrderValue: Number(form.minOrderValue) || 0,
         expiresAt: form.expiresAt ? new Date(form.expiresAt).toISOString() : null,
         isActive: form.isActive,
+        isSecret: Boolean(form.isSecret),
         targetAudience: form.targetAudience,
         targetEmail: form.targetAudience === 'specific_customer' ? form.targetEmail.trim().toLowerCase() : '',
         maxUsesPerUser: Math.max(1, Number(form.maxUsesPerUser) || 1),
@@ -135,11 +137,18 @@ export default function CouponModal({ coupon, onClose, onSave }) {
               <span className="text-[11px] font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
                 <Sparkles size={13} /> Customer Preview in Cart
               </span>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                form.isActive ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-muted text-muted-foreground'
-              }`}>
-                {form.isActive ? 'Active' : 'Draft / Inactive'}
-              </span>
+              <div className="flex items-center gap-1.5">
+                {form.isSecret && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center gap-1">
+                    <EyeOff size={10} /> Hidden / Secret
+                  </span>
+                )}
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  form.isActive ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-muted text-muted-foreground'
+                }`}>
+                  {form.isActive ? 'Active' : 'Draft / Inactive'}
+                </span>
+              </div>
             </div>
             <div className="flex items-center justify-between gap-3 bg-card p-3 rounded-lg border border-border shadow-xs">
               <div>
@@ -412,6 +421,25 @@ export default function CouponModal({ coupon, onClose, onSave }) {
               />
               <span className="text-[10px] text-muted-foreground">0 for unlimited claims across all customers</span>
             </div>
+          </div>
+
+          {/* Secret / Hidden Promo Code Switch */}
+          <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 flex items-center justify-between gap-4">
+            <div className="space-y-0.5">
+              <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                <EyeOff size={14} className="text-amber-600 dark:text-amber-400" />
+                Secret Promo Code (Manual Code Entry Only)
+              </div>
+              <div className="text-xs text-muted-foreground leading-relaxed">
+                {form.isSecret
+                  ? 'Hidden from storefront & cart coupon drawers. Shoppers can only apply it by manually typing the code (great for influencer campaigns, private VIPs, or printed marketing).'
+                  : 'Publicly visible — Eligible shoppers can see and pick this coupon directly from the cart drawer.'}
+              </div>
+            </div>
+            <Switch
+              checked={form.isSecret}
+              onCheckedChange={v => setForm({ ...form, isSecret: v })}
+            />
           </div>
 
           {/* Active Status */}
